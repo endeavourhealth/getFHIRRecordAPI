@@ -7,6 +7,17 @@ public class ImmunizationFull {
     private Date clinicalEffectiveDate;
     private String name;
 
+
+    private String codeURL;
+    public String getCodeURL() {
+        return codeURL;
+    }
+
+    public ImmunizationFull setCodeURL(String codeURL) {
+        this.codeURL=codeURL;
+        return this;
+    }
+
     public long getId() {
         return id;
     }
@@ -66,12 +77,21 @@ public class ImmunizationFull {
         return this;
     }
 
+    public long getOrgId() {
+        return orgId;
+    }
+
     public String getCode() {
         return code;
     }
 
     public ImmunizationFull setCode(String code) {
         this.code = code;
+        return this;
+    }
+long orgId;
+    public ImmunizationFull setOrgId(long aLong) {
+        this.orgId=aLong;
         return this;
     }
 }

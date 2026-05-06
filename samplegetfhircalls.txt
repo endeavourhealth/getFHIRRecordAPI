@@ -1,0 +1,31 @@
+curl --insecure -X POST "https://demo.discoverydataservice.net:8443/fhirAPI/patient/\$getstructuredrecord" -H "Authorization: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhVngtTUpFQlpBOVFRYWtOTUc3ajM2SHpXT1F3U1Yxa0dwYUlSRXlZcExrIn0.eyJqdGkiOiI5NGM3MDc5Yi1kMWRmLTQxMGEtOGE1Ni1jMzBiY2JiMWJlNDQiLCJleHAiOjE3Nzc1Njg1MzQsIm5iZiI6MCwiaWF0IjoxNzc3NTY3OTM0LCJpc3MiOiJodHRwczovL2RlbW86ODQ0NC9hdXRoL3JlYWxtcy9lbmRlYXZvdXIiLCJzdWIiOiI5ZjBlYmI4OC0zMDA0LTQyNWMtYmE0OS0zYTAyZjI1MjYzOTYiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJmaGlyLWFwaS1jbGFzc2lmaWNhdGlvbi10ZXN0IiwiYXV0aF90aW1lIjowLCJzZXNzaW9uX3N0YXRlIjoiOWQyZjYzMGUtYjIxMC00MThjLTg3OTgtN2EyN2VlYzhhZjI5IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY2xpZW50SWQiOiJmaGlyLWFwaS1jbGFzc2lmaWNhdGlvbi10ZXN0IiwiY2xpZW50SG9zdCI6IjEyNy4wLjAuMSIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC1maGlyLWFwaS1jbGFzc2lmaWNhdGlvbi10ZXN0IiwiY2xpZW50QWRkcmVzcyI6IjEyNy4wLjAuMSIsImVtYWlsIjoic2VydmljZS1hY2NvdW50LWZoaXItYXBpLWNsYXNzaWZpY2F0aW9uLXRlc3RAcGxhY2Vob2xkZXIub3JnIn0.LBQ0AnzOmWA1KpAZ8Qc9LKb3bhXXUZMEVgmIFpUib39hH_YlJpgkYLDsv4BF1QWn94odm1oGd4dpsal8ng2g_MmUiB-yZpT4jF1ANr4nXNeA0_5AqDLBWPGVIy10ALKVKFFEQGuYtzfqqNITMkGhbKiooDieI-XC4qA_iQ1Yiwe7Qy2xwvbOkpRnANKlxQYjrTWnALpE6tR5v3RaTfkM260I7MjnuX7uvpCHzjKjr1anXxnnpYUiwlo17yiWcZVmKI3wiiLZwTPeuumQx2pwS8VycQRao-okHCBNHT87Wr2RpEdF8naj6j-g4Rj60yPboY3vikgpe_gJ3WlOVx8pKg" -H "Content-Type: application/json" \
+-d '{
+        "meta": {
+		"profile": [
+		"https://fhir.hl7.org.uk/STU3/OperationDefinition/CareConnect-GetStructuredRecord-Operation-1"
+    ]
+	},
+	"resourceType": "Parameters",
+    "parameter": [
+	{
+        "name": "patientNHSNumber",
+        "valueIdentifier": {
+          "system": "https://fhir.hl7.org.uk/Id/nhs-number",
+          "value": "8010502928"
+        }
+      },
+      {
+        "name": "patientDOB",
+        "valueIdentifier": {
+          "system": "https://fhir.hl7.org.uk/Id/dob",
+          "value": "1950-12-14"
+        }
+      }
+    ]
+}'
+
+curl -X GET "https://demo.discoverydataservice.net:8443/fhirAPI/api/v2/ontologies/nhs/objects/patient/8010502928" -H "Authorization: eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhVngtTUpFQlpBOVFRYWtOTUc3ajM2SHpXT1F3U1Yxa0dwYUlSRXlZcExrIn0.eyJqdGkiOiI3Yzg0MjAyZS03NzlmLTRjMDgtYTY0OS1mNjUyZjA1ZWUzZWIiLCJleHAiOjE3Nzc1NzI2OTAsIm5iZiI6MCwiaWF0IjoxNzc3NTcyMDkwLCJpc3MiOiJodHRwczovL2RlbW86ODQ0NC9hdXRoL3JlYWxtcy9lbmRlYXZvdXIiLCJzdWIiOiI5ZjBlYmI4OC0zMDA0LTQyNWMtYmE0OS0zYTAyZjI1MjYzOTYiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJmaGlyLWFwaS1jbGFzc2lmaWNhdGlvbi10ZXN0IiwiYXV0aF90aW1lIjowLCJzZXNzaW9uX3N0YXRlIjoiODI5MDcyN2EtOTdmNy00NDQ5LWIzNGItMWJhODkyYjlhN2IxIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sInNjb3BlIjoiZW1haWwgcHJvZmlsZSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiY2xpZW50SWQiOiJmaGlyLWFwaS1jbGFzc2lmaWNhdGlvbi10ZXN0IiwiY2xpZW50SG9zdCI6IjEyNy4wLjAuMSIsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC1maGlyLWFwaS1jbGFzc2lmaWNhdGlvbi10ZXN0IiwiY2xpZW50QWRkcmVzcyI6IjEyNy4wLjAuMSIsImVtYWlsIjoic2VydmljZS1hY2NvdW50LWZoaXItYXBpLWNsYXNzaWZpY2F0aW9uLXRlc3RAcGxhY2Vob2xkZXIub3JnIn0.UYZbJcV2fo5kKPbK5FGbAuY9wMeXolRjtDgBMKFbPhrYNXes1y-d_CxSogzvT-eiIjnPtTrG0cwKz2XJ0iqWYc9dXA2TN5Od399Dq68cUzJY7L44RKyKsWrVbmQ7GwChkDZlVVfHC-mVQ9NISYvXGO8VFdljCGAIk-cWeLivOfmMz0f2yrFq-l4hgf4qGpkZ6HQPoehdbrks0ydRwJos3oY9A3YQh0qDKZQF3-haIzTKoT0tQior7rhwdMI5ccpYj2MJPdA3dFoBOPVNJpK1NnCeCQG4DRzLD3MUMpz6F9sj3MdVVfENqY7qQd6nceWkUFZrMOVIUhli94pzcbq84w"
+curl -X GET "https://demo.discoverydataservice.net:8443/fhirAPI/api/v2/ontologies/nhs/objects/patient/8010502928" \
+  -H "Authorization: Bearer eyJhbGciOi..."
+  
+curl -X GET "https://demo.discoverydataservice.net:8443/fhirAPI/api/v2/ontologies/nhs/objects/patient/8010502928" -H "user_id: I-00d27e668c4e09677"

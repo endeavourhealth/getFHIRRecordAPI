@@ -1,18 +1,38 @@
 package org.endeavourhealth.getFHIRRecordAPI.common.models;
 
+import java.util.Date;
+
 public class ObservationFull {
     private long id;
     private long patientId;
-    private String date;
+    private Date date;
     private String description;
     private double resultValue;
     private String resultValueUnits;
     private String code;
+
+    public String getCategoryCode() {
+        return categoryCode;
+    }
+
+    public void setCategoryCode(String categoryCode) {
+        this.categoryCode = categoryCode;
+    }
+
+    public String getCategoryText() {
+        return categoryText;
+    }
+
+    public void setCategoryText(String categoryText) {
+        this.categoryText = categoryText;
+    }
+
     private String name;
     private long organizationId;
     private long practitionerId;
     private long encounterId;
-
+    private String categoryCode;
+    private String categoryText;
     private String category;
 
     public long getId() {
@@ -60,11 +80,11 @@ public class ObservationFull {
         return this;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public ObservationFull setDate(String date) {
+    public ObservationFull setDate(Date date) {
         this.date = date;
         return this;
     }
@@ -121,5 +141,13 @@ public class ObservationFull {
     public ObservationFull setCategory(String category) {
         this.category = category;
         return this;
+    }
+private String dateStr;
+    public String getDateStr() {
+        return dateStr;
+    }
+
+    public void setDateStr(String dateStr) {
+        this.dateStr = dateStr;
     }
 }

@@ -1,10 +1,14 @@
 package resources;
 
+
+import org.endeavourhealth.getFHIRRecordAPI.api.process.FhirApi;
 import org.endeavourhealth.getFHIRRecordAPI.common.constants.ResourceConstants;
 import org.endeavourhealth.getFHIRRecordAPI.common.dal.JDBCDAL;
 import org.endeavourhealth.getFHIRRecordAPI.common.models.PatientFull;
 import org.endeavourhealth.getFHIRRecordAPI.common.models.TelecomFull;
 import org.hl7.fhir.dstu3.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,15 +17,17 @@ import java.util.List;
 import java.util.UUID;
 
 public class Patient {
-
+	private static final Logger LOG = LoggerFactory.getLogger(Patient.class);
 	public static org.hl7.fhir.dstu3.model.Patient getPatientResource(PatientFull patientResult, JDBCDAL JDBCDAL) throws Exception {
 		String id = replaceNull(patientResult.getId());
 		List<TelecomFull> telecomFullList = patientResult.getTelecomFullList();
 		String nhsNumber = replaceNull(patientResult.getNhsNumber());
-		String gender = replaceNull(patientResult.getGender());
-		String lastname = replaceNull(patientResult.getLastname());
-		String title = replaceNull(patientResult.getTitle());
-		String firstname = replaceNull(patientResult.getFirstname());
+		// CHDT-138 HIE (Mandatory Fields) - In the case of gender not present please still send it with the value being - unknown
+		String gender =	patientResult.getGender() == null || patientResult.getGender().equals("")
+						&& patientResult.getGender().length() == 0 ? "Unknown" : patientResult.getGender();
+		String lastname = replaceNullorEmptyWithQuotes(patientResult.getLastname());
+		String title = replaceNullorEmptyWithQuotes(patientResult.getTitle());
+		String firstname = replaceNullorEmptyWithQuotes(patientResult.getFirstname());
 		String dob = replaceNull(patientResult.getDob());
 		String dod = replaceNull(patientResult.getDod());
 		String adduse = replaceNull(patientResult.getAdduse());
@@ -41,7 +47,7 @@ public class Patient {
 
 		org.hl7.fhir.dstu3.model.Patient patient = new org.hl7.fhir.dstu3.model.Patient();
 
-		String[] religionData = JDBCDAL.getReligion(Integer.parseInt(id));
+		String[] religionData = JDBCDAL.getReligion(Long.parseLong(id));
 		if (religionData != null) {
 			Extension extension1 = new Extension();
 			List<Coding> coding = new ArrayList<>();
@@ -52,7 +58,7 @@ public class Patient {
 			patient.addExtension(extension1);
 		}
 
-		String[] language = JDBCDAL.getLanguage(Integer.parseInt(id));
+		String[] language = JDBCDAL.getLanguage(Long.parseLong(id));
 		if (language != null) {
 			org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent patientCommunicationComponent = new org.hl7.fhir.dstu3.model.Patient.PatientCommunicationComponent();
 			List<Coding> coding = new ArrayList<>();
@@ -63,7 +69,7 @@ public class Patient {
 			patient.setCommunication(Arrays.asList(patientCommunicationComponent));
 		}
 
-		patient.setId(UUID.randomUUID().toString());
+			patient.setId(UUID.randomUUID().toString());
 
 		patient.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-Patient-1");
 
@@ -71,10 +77,10 @@ public class Patient {
 				.setValue(String.valueOf(patientResult.getId()))
 				.setSystem(ResourceConstants.SYSTEM_ID);
 
-		Identifier nhs = patient.addIdentifier()
+		patient.addIdentifier()
 				.setSystem("https://fhir.hl7.org.uk/Id/nhs-number")
 				.setValue(nhsNumber);
-		CodeableConcept code = new CodeableConcept();
+		/* CodeableConcept code = new CodeableConcept();
 		code.addCoding()
 				.setCode("01")
 				.setDisplay("Number present and verified")
@@ -82,8 +88,7 @@ public class Patient {
 
 		nhs.addExtension()
 				.setUrl("https://fhir.hl7.org.uk/STU3/StructureDefinition/Extension-CareConnect-NHSNumberVerificationStatus-1")
-				.setValue(code);
-
+				.setValue(code);*/
 		switch(gender) {
 			case "Other":
 				patient.setGender(Enumerations.AdministrativeGender.OTHER);
@@ -104,8 +109,7 @@ public class Patient {
 		patient.addName()
 				.setFamily(lastname)
 				.addPrefix(title)
-				.addGiven(firstname)
-				.setUse(HumanName.NameUse.OFFICIAL);
+				.addGiven(firstname);
 
 		CodeableConcept codeEthnic = new CodeableConcept();
 		codeEthnic.addCoding()
@@ -118,17 +122,13 @@ public class Patient {
 				String telecom = replaceNull(telecomFull.getValue());
 				String desc1 = replaceNull(telecomFull.getDescription1());
 				String desc2 = replaceNull(telecomFull.getDescription2());
-
-				ContactPoint t = new ContactPoint();
-				t.setValue(telecom);
-				if (desc1.equalsIgnoreCase("Phone")) {
+        		if (desc1.equalsIgnoreCase("Phone")) {
+					ContactPoint t = new ContactPoint();
+					t.setValue(telecom);
 					t.setSystem(ContactPoint.ContactPointSystem.PHONE);
-				} else if (desc1.equalsIgnoreCase("Email")) {
-					t.setSystem(ContactPoint.ContactPointSystem.EMAIL);
+					setPhoneData(desc2, t);
+					patient.addTelecom(t);
 				}
-				setPhoneData(desc2, t);
-
-				patient.addTelecom(t);
 			}
 		}
 
@@ -143,12 +143,7 @@ public class Patient {
 			dateTimeType.setValue(format.parse(dod));
 			patient.setDeceased(dateTimeType);
 		}
-
 		Address address = new Address();
-
-		if (adduse.equals("HOME")) {address.setUse(Address.AddressUse.HOME);}
-		if (adduse.equals("TEMP")) {address.setUse(Address.AddressUse.TEMP);}
-		if (adduse.equals("OLD")) {address.setUse(Address.AddressUse.OLD);}
 
 		address.addLine(add1);
 		address.addLine(add2);
@@ -167,9 +162,6 @@ public class Patient {
 				z = ss[i];
 				String[] zaddress = z.split("\\`");
 				Address t = new Address();
-				if (zaddress[6].equals("1335358")) {t.setUse(Address.AddressUse.HOME);}
-				if (zaddress[6].equals("1335360")) {t.setUse(Address.AddressUse.TEMP);}
-				if (zaddress[6].equals("1335361")) {t.setUse(Address.AddressUse.OLD);}
 				t.addLine(zaddress[0]);
 				t.addLine(zaddress[1]);
 				t.addLine(zaddress[2]);
@@ -179,34 +171,32 @@ public class Patient {
 				patient.addAddress(t);
 			}
 		}
-
 		if (!startdate.isEmpty()) {
 			SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy");
 			Period period = new Period();
 			period.setStart(format.parse(startdate));
-			if(!endDate.isEmpty()) {
-				period.setEnd(format.parse(endDate));
-			}
+			//if(!endDate.isEmpty()) {
+			//	period.setEnd(format.parse(endDate));
+			//}
 			Extension registration = patient.addExtension();
 			registration.setUrl("https://fhir.hl7.org.uk/STU3/StructureDefinition/Extension-CareConnect-RegistrationDetails-1");
 			Extension ext1 = new Extension();
 			ext1.setUrl("registrationPeriod");
 			ext1.setValue(period);
-			Extension ext2 = new Extension();
+			/*Extension ext2 = new Extension();
 			CodeableConcept codeRegistration = new CodeableConcept();
 			codeRegistration.addCoding()
 					.setDisplay(registrationStatusValue)
 					.setSystem("https://fhir.hl7.org.uk/STU3/ValueSet/CareConnect-RegistrationType-1");
 
 			ext2.setUrl("registrationType");
-			ext2.setValue(codeRegistration);
+			ext2.setValue(codeRegistration);*/
 
 			List<Extension> ext = new ArrayList<>();
 			ext.add(ext1);
-			ext.add(ext2);
+			//ext.add(ext2);
 			registration.setExtension(ext);
 		}
-
 
 
 
@@ -217,6 +207,13 @@ public class Patient {
 		return input == null ? "" : input;
 	}
 
+	/*
+	 * CHDT-138 HIE (Mandatory Fields) - As a part of this requirement some of the fields to be returned as
+	 * double quote to ensure they are not being dropped from the response in case they are null/empty.
+	 */
+	public static String replaceNullorEmptyWithQuotes(String input) {
+		return input == null || input.equals("") && input.length() == 0 ? "\"" + "\"" : input;
+	}
 
 	private static void setPhoneData(String desc, ContactPoint contactPoint){
 		switch (desc.toUpperCase()) {
@@ -247,5 +244,6 @@ public class Patient {
 
 		return code;
 	}
+
 
 }

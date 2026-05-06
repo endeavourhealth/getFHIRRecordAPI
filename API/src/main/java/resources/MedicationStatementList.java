@@ -18,7 +18,7 @@ public class MedicationStatementList {
                 .setCode("933361000000108")
                 .setSystem("http://snomed.info/sct")
                 .setDisplay("Medications and medical devices");
-
+        medicationStatementList.setCode(code);
         CodeableConcept orderbycode = new CodeableConcept();
         code.addCoding()
                 .setCode("event-date")

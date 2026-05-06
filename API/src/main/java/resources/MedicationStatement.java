@@ -13,8 +13,8 @@ import static org.endeavourhealth.getFHIRRecordAPI.common.constants.ResourceCons
 public class MedicationStatement {
 
 	public static org.hl7.fhir.dstu3.model.MedicationStatement getMedicationStatementResource(MedicationStatementFull medicationStatementResult) throws Exception {
-		String clinicalEffDate = replaceNull(medicationStatementResult.getDate());
-		String lastIssueDate = replaceNull(medicationStatementResult.getLastIssueDate());
+		String clinicalEffDate = medicationStatementResult.getDate();
+		String lastIssueDate = medicationStatementResult.getLastIssueDate();
 		String dose = replaceNull(medicationStatementResult.getDose());
 		String valueDateTime = replaceNull(medicationStatementResult.getValueDateTime());
 		UUID id = UUID.randomUUID();
@@ -29,12 +29,13 @@ public class MedicationStatement {
 		medicationStatement.addIdentifier()
 				.setValue(String.valueOf(medicationStatementResult.getId()))
 				.setSystem(ResourceConstants.SYSTEM_ID);
-
-		medicationStatement.setStatus(medicationStatementResult.getCancellationDate().equals("") ? org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.ACTIVE :
+		Date cancellationDate = medicationStatementResult.getCancellationDate().equals("") ? null:new SimpleDateFormat("yyyy-MM-dd").parse(medicationStatementResult.getCancellationDate());
+		medicationStatement.setStatus(cancellationDate == null || new Date().before(cancellationDate)
+				? org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.ACTIVE :
 				org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementStatus.COMPLETED);
 		medicationStatement.setId(String.valueOf(id));
 		medicationStatement.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-MedicationStatement-1");
-		medicationStatement.setTaken(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementTaken.UNK);
+	//	medicationStatement.setTaken(org.hl7.fhir.dstu3.model.MedicationStatement.MedicationStatementTaken.UNK);
 
 		medicationStatement.setDateAsserted(clinicalEffDt);
 		//medicationStatement.getEffectivePeriod().setStart(clinicalEffDt);
@@ -130,7 +131,7 @@ public class MedicationStatement {
 		Coding coding = new Coding();
 		coding.setDisplay(name);
 		coding.setCode(code);
-		coding.setSystem("http://snomed.info/sct");
+		coding.setSystem(medicationStatementResult.getCodeURL());
 		CodeableConcept codeableConcept = new CodeableConcept();
 		codeableConcept.addCoding(coding);
 		medication.setCode(codeableConcept);

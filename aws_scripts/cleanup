@@ -1,1 +1,3 @@
-rm -rf /opt/tomcat/webapps/fhir-record-api
+rm -rf /opt/tomcat/webapps/fhirAPI.war
+rm -rf /opt/tomcat/webapps/fhirAPI
+rm -f /opt/tomcat/work/Catalina/*/fhirAPI*

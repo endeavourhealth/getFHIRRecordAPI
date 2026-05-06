@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: /API/target/api
+  - source: /API/target/fhirAPI
     destination: //opt/tomcat/webapps/fhirAPI
 hooks:
   BeforeInstall:

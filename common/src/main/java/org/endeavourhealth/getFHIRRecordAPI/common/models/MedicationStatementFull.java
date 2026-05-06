@@ -17,7 +17,15 @@ public class MedicationStatementFull {
     private long organizationId;
     private String cancellationDate;
     private String lastIssueDate;
+    private String codeURL;
+    public String getCodeURL() {
+        return codeURL;
+    }
 
+    public MedicationStatementFull setCodeURL(String codeURL) {
+        this.codeURL=codeURL;
+        return this;
+    }
 
     public long getId() {
         return id;
@@ -122,15 +130,17 @@ public class MedicationStatementFull {
         return practitionerId;
     }
 
-    public void setPractitionerId(long practitionerId) {
+    public MedicationStatementFull setPractitionerId(long practitionerId) {
         this.practitionerId = practitionerId;
+        return this;
     }
 
     public long getOrganizationId() {
         return organizationId;
     }
 
-    public void setOrganizationId(long organizationId) {
+    public MedicationStatementFull setOrganizationId(long organizationId) {
         this.organizationId = organizationId;
+        return this;
     }
 }

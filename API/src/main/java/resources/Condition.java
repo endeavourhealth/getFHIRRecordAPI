@@ -44,7 +44,7 @@ public class Condition {
         code.setText(conditionfull.getName());
         code.addCoding()
                 .setCode(conditionfull.getCode())
-                .setSystem("http://snomed.info/sct")
+                .setSystem(conditionfull.getCodeURL())
                 .setDisplay(conditionfull.getName());
         condition.setId(UUID.randomUUID().toString());
         condition.setCode(code);

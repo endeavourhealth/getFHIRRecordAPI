@@ -1,5 +1,6 @@
 package org.endeavourhealth.getFHIRRecordAPI.api.endpoints;
 
+import org.endeavourhealth.getFHIRRecordAPI.api.process.FhirApi;
 import org.endeavourhealth.getFHIRRecordAPI.common.dal.JDBCDAL;
 import org.endeavourhealth.getFHIRRecordAPI.common.models.ObservationFull;
 import org.endeavourhealth.getFHIRRecordAPI.common.models.PatientFull;
@@ -31,7 +32,6 @@ public class CareRecordEndpointTest {
         careRecordEndpoint = spy(new CareRecordEndpoint());
         patient = getPatientFull();
         fhirApi = spy(new FhirApi());
-        when(careRecordEndpoint.getFhirApi()).thenReturn(fhirApi);
         JDBCDAL = mock(JDBCDAL.class);
     }
 
@@ -39,7 +39,7 @@ public class CareRecordEndpointTest {
     public void testFhirForPatientAndObservation() throws Exception {
 /*
         //Patientids mocked value
-        Map<Integer,String> patientIds = new HashMap<>();
+        Map<Long,String> patientIds = new HashMap<>();
         patientIds.put(9999, "name#display");
         when(JDBCDAL.getPatientIds("0", 9999)).thenReturn(patientIds);
 
@@ -80,10 +80,11 @@ public class CareRecordEndpointTest {
     }
 
 
-    public List<ObservationFull> getObservationFullList() {
+    public List<ObservationFull> getObservationFullList() throws ParseException {
         List<ObservationFull> observationFullList = new ArrayList<>();
         ObservationFull observationFull = new ObservationFull();
-        observationFull.setOrganizationId(1001).setPractitionerId(2001).setName("ObservationName").setDescription("Sample test").setDate("14-5-2019 00:00:00");
+        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+        observationFull.setOrganizationId(1001).setPractitionerId(2001).setName("ObservationName").setDescription("Sample test").setDate(sdf.parse("14-5-2019"));
         observationFullList.add(observationFull);
         return observationFullList;
     }

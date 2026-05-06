@@ -29,7 +29,6 @@ public class Practitioner {
         practitioner.setId(uuid.toString());
 
         practitioner.getMeta().addProfile(PRACTITIONER_URL);
-        practitioner.getMeta().setLastUpdated(getSystemDate());
 
         practitioner.addIdentifier()
                 .setSystem(IDENTIFIER_URL);
@@ -61,15 +60,50 @@ public class Practitioner {
         return practitioner;
     }
 
-    private static Date getSystemDate() {
-        return java.sql.Timestamp.valueOf(LocalDateTime.now());
-    }
-
-    private static String[] splitName(String fullName) {
+     private static String[] splitName(String fullName) {
         String modifiedName = fullName.replaceAll("\\W", " ");
         return Arrays.stream(modifiedName.split("  "))
                 .map(String::trim)
                 .toArray(String[]::new);
 
+    }
+
+    public static org.hl7.fhir.dstu3.model.Practitioner getPractitionerResource(String consultantName) {
+
+        org.hl7.fhir.dstu3.model.Practitioner practitioner = new org.hl7.fhir.dstu3.model.Practitioner();
+
+        UUID uuid = UUID.randomUUID();
+        practitioner.setId(uuid.toString());
+
+        practitioner.getMeta().addProfile(PRACTITIONER_URL);
+
+        practitioner.addIdentifier()
+                .setSystem(IDENTIFIER_URL);
+
+        practitioner.addIdentifier()
+                .setValue(String.valueOf(uuid))
+                .setSystem(ResourceConstants.SYSTEM_ID);
+
+        HumanName name = practitioner.addName();
+
+        if (consultantName != null) {
+            String[] nameList = splitName(consultantName);
+            name.setUse(HumanName.NameUse.USUAL);
+
+
+            if (ArrayUtils.isNotEmpty(nameList)) {
+                name.setFamily(nameList[0]);
+                if (nameList.length > 1) {
+                    name.setGiven(Arrays.asList(new StringType(nameList[1])));
+                }
+                if (nameList.length > 2) {
+                    name.setPrefix(Arrays.asList(new StringType(nameList[2])));
+                }
+            } else {
+                LOG.error("Something wrong in receiving Practitioner name details" + consultantName);
+            }
+        }
+
+        return practitioner;
     }
 }

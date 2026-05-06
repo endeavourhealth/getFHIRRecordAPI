@@ -13,7 +13,7 @@ public class AllergyIntolerance {
 		org.hl7.fhir.dstu3.model.AllergyIntolerance allergy = new org.hl7.fhir.dstu3.model.AllergyIntolerance();
 
 		allergy.setClinicalStatus(org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceClinicalStatus.ACTIVE);
-		allergy.setVerificationStatus(org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceVerificationStatus.CONFIRMED);
+		//allergy.setVerificationStatus(org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceVerificationStatus.CONFIRMED);
 		allergy.setType(org.hl7.fhir.dstu3.model.AllergyIntolerance.AllergyIntoleranceType.ALLERGY);
 		allergy.getMeta().addProfile("https://fhir.hl7.org.uk/STU3/StructureDefinition/CareConnect-AllergyIntolerance-1");
 		allergy.addIdentifier()
@@ -24,7 +24,7 @@ public class AllergyIntolerance {
 		CodeableConcept code = new CodeableConcept();
 		code.addCoding()
 				.setCode(allergyfull.getCode())
-				.setSystem("http://snomed.info/sct")
+				.setSystem(allergyfull.getCodeURL())
 				.setDisplay(allergyfull.getName());
 		allergy.setId(UUID.randomUUID().toString());
         allergy.setCode(code);

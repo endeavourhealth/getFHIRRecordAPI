@@ -18,7 +18,7 @@ public class ConditionList {
                 .setCode("717711000000103")
                 .setSystem("http://snomed.info/sct")
                 .setDisplay("Problems");
-
+        conditionList.setCode(code);
         CodeableConcept orderbycode = new CodeableConcept();
         code.addCoding()
                 .setCode(" event-date")

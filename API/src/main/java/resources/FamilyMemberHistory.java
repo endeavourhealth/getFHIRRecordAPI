@@ -12,7 +12,7 @@ import java.util.UUID;
 public class FamilyMemberHistory {
 
 	public static org.hl7.fhir.dstu3.model.FamilyMemberHistory getFamilyMemberHistoryResource(FamilyMemberHistoryFull familyMemberHistoryResult) throws Exception {
-		String date = replaceNull(familyMemberHistoryResult.getDate());
+		String date = familyMemberHistoryResult.getDate();
 		String status = replaceNull(familyMemberHistoryResult.getStatus());
 		String name = replaceNull(familyMemberHistoryResult.getName());
 		String code = replaceNull(familyMemberHistoryResult.getCode());
@@ -36,10 +36,10 @@ public class FamilyMemberHistory {
 			familyMemberHistory.setStatus(org.hl7.fhir.dstu3.model.FamilyMemberHistory.FamilyHistoryStatus.PARTIAL);
 
 		familyMemberHistory.setDate(dt);
-		familyMemberHistory.getText().setStatus(Narrative.NarrativeStatus.GENERATED);
+		//familyMemberHistory.getText().setStatus(Narrative.NarrativeStatus.GENERATED);
 
 		Coding coding = new Coding();
-		coding.setSystem("http://snomed.info/sct");
+		coding.setSystem(familyMemberHistoryResult.getCodeURL());
 		coding.setCode(code);
 		coding.setDisplay(name);
 		familyMemberHistory.addCondition().getCode().addCoding(coding);

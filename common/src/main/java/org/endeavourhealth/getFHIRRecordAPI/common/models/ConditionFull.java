@@ -12,7 +12,28 @@ public class ConditionFull {
     private String name;
     private String category;
 
+    public long getEncounterId() {
+        return encounterId;
+    }
+
+    public ConditionFull setEncounterId(long encounterId) {
+        this.encounterId = encounterId;
+        return this;
+    }
+
+    private long encounterId;
+
     private boolean problem;
+
+    private String codeURL;
+    public String getCodeURL() {
+        return codeURL;
+    }
+
+    public ConditionFull setCodeURL(String codeURL) {
+        this.codeURL=codeURL;
+        return this;
+    }
 
     public long getId() {
         return id;
@@ -104,4 +125,13 @@ public class ConditionFull {
         return titleCase.toString();
     }
 
+    public long getOrgId() {
+        return orgId;
+    }
+
+    private long orgId;
+    public ConditionFull setOrgId(long organization_id) {
+        this.orgId=organization_id;
+        return this;
+    }
 }

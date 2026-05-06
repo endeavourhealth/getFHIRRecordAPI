@@ -1,12 +1,24 @@
 package org.endeavourhealth.getFHIRRecordAPI.common.models;
 
+import java.util.Map;
+
 public class EncounterFull {
+
+    private Map<String,String> specialityMap;
     public String getStatus() {
         return status;
     }
 
     public long getEncounterid() {
         return encounterid;
+    }
+
+    public Map<String, String> getSpecialityMap() {
+        return specialityMap;
+    }
+
+    public void setSpecialityMap(Map<String, String> specialityMap) {
+        this.specialityMap = specialityMap;
     }
 
     public EncounterFull setEncounterid(long encounterid) {
@@ -91,15 +103,41 @@ public class EncounterFull {
         return this;
     }
 
+
+
+
     private String status;
     private String name;
+
+    public long getSp_organizationId() {
+        return sp_organizationId;
+    }
+
+    public EncounterFull setSp_organizationId(long sp_organizationId) {
+        this.sp_organizationId = sp_organizationId;
+        return this;
+    }
+
     private String code;
     private long encounterid;
     private long patientId;
+
     private String date;
     private String endDate;
     private String episode_of_care_id;
     private long practitionerId=-1;
     private long organizationId;
+
+    public String getRefConsultant() {
+        return refConsultant;
+    }
+
+    public void setRefConsultant(String refConsultant) {
+        this.refConsultant = refConsultant;
+    }
+
+    private long sp_organizationId;
+  private String refConsultant;
+
 
 }

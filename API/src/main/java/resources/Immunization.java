@@ -20,7 +20,7 @@ public class Immunization {
         org.hl7.fhir.dstu3.model.Immunization immunization = new org.hl7.fhir.dstu3.model.Immunization();
         immunization.setId(UUID.randomUUID().toString());
         immunization.setStatus(org.hl7.fhir.dstu3.model.Immunization.ImmunizationStatus.COMPLETED);
-        immunization.setPrimarySource(true);
+        //immunization.setPrimarySource(true);
         immunization.setDate(immunizationFull.getClinicalEffectiveDate());
         immunization.getMeta().addProfile("https://fhir.nhs.uk/STU3/StructureDefinition/CareConnect-GPC-Immunization-1");
         immunization.addIdentifier()
@@ -36,7 +36,7 @@ public class Immunization {
 
         Extension extension1 = new Extension();
         List<Coding> coding=new ArrayList<>();
-        coding.add(new Coding("http://snomed.info/sct",immunizationFull.getCode(),immunizationFull.getName()));
+        coding.add(new Coding(immunizationFull.getCodeURL(),immunizationFull.getCode(),immunizationFull.getName()));
         CodeableConcept codeableConcept = (CodeableConcept) extension1.addChild("valueCodeableConcept");
         codeableConcept.setCoding(coding);
         immunization.addExtension(extension1);
@@ -44,7 +44,7 @@ public class Immunization {
 
         org.hl7.fhir.dstu3.model.Immunization.ImmunizationExplanationComponent expl=new org.hl7.fhir.dstu3.model.Immunization.ImmunizationExplanationComponent();
         List<Coding> coding1=new ArrayList<>();
-        coding1.add(new Coding().setSystem("http://snomed.info/sct"));
+        coding1.add(new Coding().setSystem(immunizationFull.getCodeURL()));
         expl.addReason().setCoding(coding1);
         immunization.setExplanation(expl);
 

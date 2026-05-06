@@ -149,7 +149,7 @@
   </dependencies>
 
   <build>
-    <finalName>api</finalName>
+      <finalName>fhirAPI</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

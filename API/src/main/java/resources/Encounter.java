@@ -16,29 +16,38 @@ public class Encounter {
 
      */
 
-    public static org.hl7.fhir.dstu3.model.Encounter getEncounterResource(EncounterFull encounterFull) throws ParseException {
+    public static org.hl7.fhir.dstu3.model.Encounter getEncounterResource(EncounterFull encounterFull,String dbType) throws ParseException {
         org.hl7.fhir.dstu3.model.Encounter encounter = new org.hl7.fhir.dstu3.model.Encounter();
         encounter.setId(UUID.randomUUID().toString());
+        if (dbType.equalsIgnoreCase("GP")) {
+            encounter.setStatus(org.hl7.fhir.dstu3.model.Encounter.EncounterStatus.FINISHED);
 
-        /*  Set status to finished for all GP encounters
+        }
+        else
+        {
+
         if (encounterFull.getStatus().equalsIgnoreCase("active")) {
             encounter.setStatus(org.hl7.fhir.dstu3.model.Encounter.EncounterStatus.INPROGRESS);
         } else {
             encounter.setStatus(org.hl7.fhir.dstu3.model.Encounter.EncounterStatus.FINISHED);
         }
-        */
-        encounter.setStatus(org.hl7.fhir.dstu3.model.Encounter.EncounterStatus.FINISHED);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        }
+
+
+
+
+        SimpleDateFormat enddDTformatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat startDTformatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         if(encounterFull.getDate() != null) {
-            Date clinicalEffDt = formatter.parse(encounterFull.getDate());
+            Date clinicalEffDt = startDTformatter.parse(encounterFull.getDate());
 
             if (clinicalEffDt != null) {
                 Period period = new Period();
                 period.setStart(clinicalEffDt);
                 if (encounterFull.getEndDate() != null) {
-                    Date endDate = formatter.parse(encounterFull.getEndDate());
+                    Date endDate = enddDTformatter.parse(encounterFull.getEndDate());
                     period.setEnd(endDate);
                 }
                 encounter.setPeriod(period);

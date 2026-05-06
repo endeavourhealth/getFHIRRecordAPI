@@ -4,10 +4,21 @@ public class FamilyMemberHistoryFull {
     private long id;
     private long patientId;
     private String date;
+    private String organizationId;
     private String status;
     private String name;
     private String code;
     private long practitionerId;
+
+    private String codeURL;
+    public String getCodeURL() {
+        return codeURL;
+    }
+
+    public FamilyMemberHistoryFull setCodeURL(String codeURL) {
+        this.codeURL=codeURL;
+        return this;
+    }
 
     public long getId() {
         return id;
@@ -15,6 +26,15 @@ public class FamilyMemberHistoryFull {
 
     public FamilyMemberHistoryFull setId(long id) {
         this.id = id;
+        return this;
+    }
+
+    public String getOrganizationId() {
+        return organizationId;
+    }
+
+    public FamilyMemberHistoryFull setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
         return this;
     }
 

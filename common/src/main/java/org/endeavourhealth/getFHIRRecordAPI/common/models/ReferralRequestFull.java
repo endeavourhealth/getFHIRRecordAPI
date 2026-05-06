@@ -7,6 +7,7 @@ public class ReferralRequestFull {
     private String id;
     private long patientId;
     private String practitionerId;
+    private String orgId;
     private String recipientOrganizationId;
     private String intent;
     private Date clinicalEffectiveDate;
@@ -15,13 +16,33 @@ public class ReferralRequestFull {
     private String typeDisplay;
     private String specialityCode;
     private String specialityName;
+    private String endDate;
 
+
+    private String codeURL;
+    public String getCodeURL() {
+        return codeURL;
+    }
+
+    public ReferralRequestFull setCodeURL(String codeURL) {
+        this.codeURL=codeURL;
+        return this;
+    }
     public String getId() {
         return id;
     }
 
     public ReferralRequestFull setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getOrgId() {
+        return orgId;
+    }
+
+    public ReferralRequestFull setOrgId(String orgId) {
+        this.orgId = orgId;
         return this;
     }
 
@@ -116,8 +137,12 @@ public class ReferralRequestFull {
         return this;
     }
 
+    public String getEndDate() {
+        return endDate;
+    }
 
-
-
-
+    public ReferralRequestFull setEndDate(String endDate) {
+        this.endDate = endDate;
+        return this;
+    }
 }

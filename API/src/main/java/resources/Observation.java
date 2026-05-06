@@ -1,13 +1,12 @@
 package resources;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.endeavourhealth.getFHIRRecordAPI.common.constants.ResourceConstants;
 import org.endeavourhealth.getFHIRRecordAPI.common.dal.JDBCDAL;
 import org.endeavourhealth.getFHIRRecordAPI.common.models.ObservationFull;
 import org.hl7.fhir.dstu3.model.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,24 +32,13 @@ public class Observation {
         org.hl7.fhir.dstu3.model.Observation observation = new org.hl7.fhir.dstu3.model.Observation();
 
         observation.setStatus(org.hl7.fhir.dstu3.model.Observation.ObservationStatus.FINAL);
-        observation.setEffective(getEffectiveDateTime(observationFull.getDate())); //observation.clinical_effective_date
+        observation.setEffective(getEffectiveDateTime(observationFull.getDateStr())); //observation.clinical_effective_date
         observation.getMeta().addProfile(ResourceConstants.OBSERVATION_PROFILE);
         observation.addIdentifier()
                 .setValue(String.valueOf(observationFull.getId()))
                 .setSystem(ResourceConstants.SYSTEM_ID);
 
-        String description = jdbcdal.getDescriptionFromObservation(observationFull.getId());
-        if(description != null) {
-            CodeableConcept problemSignificanceCode = new CodeableConcept();
-            problemSignificanceCode.addCoding()
-                    .setDisplay(description)
-                    .setSystem("http://endeavourhealth.org/fhir/ValueSet/primarycare-problem-significance");
 
-            observation.addExtension()
-                    .setUrl("http://endeavourhealth.org/fhir/StructureDefinition/primarycare-problem-significance-extension")
-                    .setValue(problemSignificanceCode);
-
-        }
         String json = jdbcdal.getJsonValueFromObservationAdditional(observationFull.getId());
         if(json != null) {
             JSONParser parser = new JSONParser();
@@ -67,7 +55,9 @@ public class Observation {
 
                     simpleQuantity.setValue(new java.math.BigDecimal(rangeJson.get("value").toString()));
                     simpleQuantity.setComparator(Quantity.QuantityComparator.fromCode(rangeJson.get("comparator").toString()));
-                    simpleQuantity.setUnit(rangeJson.get("unit").toString());
+                    if(rangeJson.get("unit") != null){
+                        simpleQuantity.setUnit(rangeJson.get("unit").toString());
+                    }
                 }
                  rangeJson= (JSONObject)  json1.get("high");
                 if(null!=rangeJson)
@@ -76,10 +66,10 @@ public class Observation {
 
                     simpleQuantity.setValue(new java.math.BigDecimal(rangeJson.get("value").toString()));
                     simpleQuantity.setComparator(Quantity.QuantityComparator.fromCode(rangeJson.get("comparator").toString()));
-                    simpleQuantity.setUnit(rangeJson.get("unit").toString());
+                    if(rangeJson.get("unit") != null){
+                        simpleQuantity.setUnit(rangeJson.get("unit").toString());
+                    }
                 }
-
-
             }
 
             List<org.hl7.fhir.dstu3.model.Observation.ObservationReferenceRangeComponent> alist= observation.getReferenceRange();
@@ -107,7 +97,11 @@ public class Observation {
 
         observation.setCode(codeConcept);
         CodeableConcept category = new CodeableConcept();
-        category.setText(observationFull.getCategory());
+        category.setText(observationFull.getCategoryText());
+        category.addCoding()
+                .setCode(observationFull.getCategoryCode())
+                .setDisplay(observationFull.getCategoryText())
+                .setSystem(observationFull.getCategory());
         observation.setCategory(Arrays.asList(category));
 
         return observation;
@@ -117,7 +111,7 @@ public class Observation {
     private Period getEffectiveDateTime(String date) {
         Period period = new Period();
         try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             period.setStart(format.parse(date));
         } catch (Exception e) {
             LOG.error(e.getMessage());

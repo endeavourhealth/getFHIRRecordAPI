@@ -17,6 +17,10 @@ public class ReferralRequest {
         String refId = referralRequestFull.getId();
         org.hl7.fhir.dstu3.model.ReferralRequest referralRequest = new org.hl7.fhir.dstu3.model.ReferralRequest();
         referralRequest.setId(UUID.randomUUID().toString());
+
+        //https://endeavourhealth.atlassian.net/browse/CHDT-146
+        //we don't have enough information to determine the status is "active"
+       // referralRequest.setStatus(org.hl7.fhir.dstu3.model.ReferralRequest.ReferralRequestStatus.UNKNOWN);
         referralRequest.setStatus(org.hl7.fhir.dstu3.model.ReferralRequest.ReferralRequestStatus.ACTIVE);
 
         referralRequest.getMeta().addProfile(ResourceConstants.REFERREL_REQUEST_PROFILE);
@@ -30,7 +34,7 @@ public class ReferralRequest {
             }
         }
 
-        if(null!=referralRequestFull.getIntent()) {
+       /* if(null!=referralRequestFull.getIntent()) {
 
             try {
                 referralRequest.setIntent(org.hl7.fhir.dstu3.model.ReferralRequest.ReferralCategory.fromCode(referralRequestFull.getIntent()));
@@ -38,7 +42,7 @@ public class ReferralRequest {
                 referralRequest.setIntent(org.hl7.fhir.dstu3.model.ReferralRequest.ReferralCategory.ORDER);
 
             }
-        }
+        }*/
 
         if(null!=referralRequestFull.getClinicalEffectiveDate())
         {
@@ -50,7 +54,7 @@ public class ReferralRequest {
 
             CodeableConcept codeableConcept = new CodeableConcept();
             Coding coding = new Coding();
-            coding.setSystem("http://snomed.info/sct");
+            coding.setSystem(referralRequestFull.getCodeURL());
             coding.setCode(referralRequestFull.getTypeCode());
             coding.setDisplay(referralRequestFull.getTypeDisplay());
             referralRequest.setReasonCode(Arrays.asList(codeableConcept.addCoding(coding)));

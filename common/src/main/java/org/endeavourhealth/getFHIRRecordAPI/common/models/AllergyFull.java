@@ -8,10 +8,22 @@ public class AllergyFull {
     private long patientId;
     private Date date;
     private String status;
+
+    private String codeURL;
+    public String getCodeURL() {
+        return codeURL;
+    }
+
+    public AllergyFull setCodeURL(String codeURL) {
+          this.codeURL=codeURL;
+          return this;
+    }
+
     private String name;
     private long organizationId;
     private long practitionerId;
     private String code;
+
 
     public long getId() {
         return id;

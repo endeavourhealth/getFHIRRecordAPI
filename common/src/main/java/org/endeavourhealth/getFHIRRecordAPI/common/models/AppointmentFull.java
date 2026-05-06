@@ -2,12 +2,33 @@ package org.endeavourhealth.getFHIRRecordAPI.common.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.Map;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AppointmentFull {
     private long id;
     private long patientId;
-    private long scheduleId;
+    private Map<String,String> specialityMap;
 
+    public Map<String, String> getSpecialityMap() {
+        return specialityMap;
+    }
+
+    public void setSpecialityMap(Map<String, String> specialityMap) {
+        this.specialityMap = specialityMap;
+    }
+
+    public long getSp_organizationId() {
+        return sp_organizationId;
+    }
+
+    public AppointmentFull setSp_organizationId(long sp_organizationId) {
+        this.sp_organizationId = sp_organizationId;
+        return this;
+    }
+
+    private long scheduleId;
+    private long sp_organizationId;
     public String getStatus() {
         return status;
     }
@@ -23,8 +44,17 @@ public class AppointmentFull {
     private String startDate;
     private int plannedDuration;
     private String type;
-    private String status;
 
+    public String getRefConsultant() {
+        return refConsultant;
+    }
+
+    public void setRefConsultant(String refConsultant) {
+        this.refConsultant = refConsultant;
+    }
+
+    private String status;
+    private String refConsultant;
     public long getId() { return id; }
 
     public AppointmentFull setId(long id) {
